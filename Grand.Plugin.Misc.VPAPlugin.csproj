@@ -7,6 +7,7 @@
   <ItemGroup>
     <Compile Remove="AdminViewLocationExpander.cs" />
     <Compile Remove="AdminViewStartup.cs" />
+    <Compile Remove="RouteProvider.cs" />
     <Compile Remove="Services\CreateProductModelService.cs" />
   </ItemGroup>
 
