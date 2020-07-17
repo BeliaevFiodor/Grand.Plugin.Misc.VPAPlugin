@@ -99,6 +99,7 @@ namespace Grand.Plugin.Misc.VPAPlugin.Services
                 {
                     var admins = _customerService.Collection.AsQueryable();
                     var admins2 = admins.Where(x => x.CustomerRoles.Any(y => y.SystemName == "Administrators")).ToList();
+                    if(admins2!=null && admins2.Count>0)
                     foreach (var admin in admins2)
                     {
                         var privateMessage = new PrivateMessage {

@@ -98,20 +98,22 @@ namespace Grand.Plugin.Misc.VPAPlugin.Services
                 if (vendor.IsAdminApproveNeeded)
                 {
                     var customer = _customerRepository.Collection.AsQueryable().Where(x => x.VendorId == product.VendorId).FirstOrDefault();
+                    if (customer != null)
+                    {
+                        var privateMessage = new PrivateMessage {
+                            StoreId = _storeContext.CurrentStore.Id,
+                            ToCustomerId = customer.Id,
+                            FromCustomerId = _workContext.CurrentCustomer.Id,
+                            Subject = "Product was approved",
+                            Text = $"Administrator {_workContext.CurrentCustomer.SystemName} approve your product {product.Name}.",
+                            IsDeletedByAuthor = false,
+                            IsDeletedByRecipient = false,
+                            IsRead = false,
+                            CreatedOnUtc = DateTime.UtcNow,
+                        };
 
-                    var privateMessage = new PrivateMessage {
-                        StoreId = _storeContext.CurrentStore.Id,
-                        ToCustomerId = customer.Id,
-                        FromCustomerId = _workContext.CurrentCustomer.Id,
-                        Subject = "Product was approved",
-                        Text = $"Administrator {_workContext.CurrentCustomer.SystemName} approve your product {product.Name}.",
-                        IsDeletedByAuthor = false,
-                        IsDeletedByRecipient = false,
-                        IsRead = false,
-                        CreatedOnUtc = DateTime.UtcNow,
-                    };
-
-                    await _forumService.InsertPrivateMessage(privateMessage);
+                        await _forumService.InsertPrivateMessage(privateMessage);
+                    }
                 }
             }
             if (!product.IsAdminApproved && !String.IsNullOrEmpty(product.VendorId))
@@ -120,20 +122,22 @@ namespace Grand.Plugin.Misc.VPAPlugin.Services
                 if (vendor.IsAdminApproveNeeded)
                 {
                     var customer = _customerRepository.Collection.AsQueryable().Where(x => x.VendorId == product.VendorId).FirstOrDefault();
+                    if (customer != null)
+                    {
+                        var privateMessage = new PrivateMessage {
+                            StoreId = _storeContext.CurrentStore.Id,
+                            ToCustomerId = customer.Id,
+                            FromCustomerId = _workContext.CurrentCustomer.Id,
+                            Subject = "Product was disapproved",
+                            Text = $"Administrator {_workContext.CurrentCustomer.SystemName} disapprove your product {product.Name}.",
+                            IsDeletedByAuthor = false,
+                            IsDeletedByRecipient = false,
+                            IsRead = false,
+                            CreatedOnUtc = DateTime.UtcNow,
+                        };
 
-                    var privateMessage = new PrivateMessage {
-                        StoreId = _storeContext.CurrentStore.Id,
-                        ToCustomerId = customer.Id,
-                        FromCustomerId = _workContext.CurrentCustomer.Id,
-                        Subject = "Product was disapproved",
-                        Text = $"Administrator {_workContext.CurrentCustomer.SystemName} disapprove your product {product.Name}.",
-                        IsDeletedByAuthor = false,
-                        IsDeletedByRecipient = false,
-                        IsRead = false,
-                        CreatedOnUtc = DateTime.UtcNow,
-                    };
-
-                    await _forumService.InsertPrivateMessage(privateMessage);
+                        await _forumService.InsertPrivateMessage(privateMessage);
+                    }
                 }
             }
         }
