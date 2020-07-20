@@ -63,7 +63,7 @@
                 <div class="row">
                     <div id="@item._id" class="panel-collapse collapse">
                         <div class="col-md-11 col-offset-1" style="margin-left:10px">
-                            <table class="table">
+                            <table width="100%" class="table">
                                 <thead class="thead-light ">
                                     <tr>
                                         <th scope="col">Product name:</th>
@@ -76,9 +76,9 @@
                                     {
 
                                         <tr>
-                                            <td><a href="/Admin/Product/Edit/@product.Id">@product.Name</a></td>
-                                            <td>@Html.Raw(product.Description)</td>
-                                            <td>
+                                            <td width="15%"><a href="/Admin/Product/Edit/@product.Id">@product.Name</a></td>
+                                            <td width="70%">@Html.Raw(product.Description)</td>
+                                            <td width="15%">
                                                 @if (product.IsAdminApproved)
                                                 {
                                                     <input class="adminCheck" type="checkbox" checked="checked" onclick='checkProductChange("@product.Id")' />
