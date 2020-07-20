@@ -12,6 +12,14 @@ namespace Grand.Plugin.Misc.VPAPlugin.Models
         public string Name { get; set; }
         public bool IsAdminApproveNeeded { get; set; }
         public List<ProductModel> Products { get; set; }
-        
+       
     }
+
+    public class VendorList
+    {
+        public List<VendorModel> List{ get; set; }
+        public bool IsNewVendorsAdminApproveNeeded { get; set; }
+        public bool IsVendor { get; set; }
+    }
+
 }

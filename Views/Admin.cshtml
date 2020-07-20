@@ -4,7 +4,7 @@
 @using Microsoft.AspNetCore.Mvc.ViewFeatures
 @using Grand.Framework.UI
 @using Grand.Framework.Extensions
-@model List<Grand.Plugin.Misc.VPAPlugin.Models.VendorModel>
+@model Grand.Plugin.Misc.VPAPlugin.Models.VendorList
 <script src="https://code.jquery.com/jquery-3.5.1.js"
         integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
         crossorigin="anonymous"></script>
@@ -23,8 +23,22 @@
         </h4>
     </div>
 </div>
+<div class="row">
+    <h4 class="col-md-4 col-md-offset-1">
+        Should new vendors needs of admin approval?
+        @if (Model.IsNewVendorsAdminApproveNeeded)
+        {
+        <input class="adminCheck" type="checkbox" checked="checked" onclick='settingChange()' />
+        }
+        else
+        {
+        <input class="adminCheck" type="checkbox" onclick='settingChange()' />
+        }
+        
+    </h4>
+</div>
 <div class="panel-group">
-    @foreach (var item in Model)
+    @foreach (var item in Model.List)
     {
         <div class="panel panel-default">
             <div class="row">
@@ -34,13 +48,15 @@
                     </div>
                     <div class="col-md-4">
                         <h4>Is admin approve need? </h4>
-                        @if (item.IsAdminApproveNeeded)
+                        @{var check = item.Products.FirstOrDefault();
+                        if (check!=null && check.IsAdminApproveNeeded)
                         {
-                            <input type="checkbox" checked="checked" onclick='checkChange("@item._id")' />
+                        <input class="adminCheck" type="checkbox" checked="checked" onclick='checkChange("@item._id")' />
                         }
                         else
                         {
-                            <input type="checkbox" onclick='checkChange("@item._id")' />
+                        <input class="adminCheck" type="checkbox" onclick='checkChange("@item._id")' />
+                        }
                         }
                     </div>
                 </div>
@@ -60,16 +76,16 @@
                                     {
 
                                         <tr>
-                                            <td>@product.Name</td>
+                                            <td><a href="/Admin/Product/Edit/@product.Id">@product.Name</a></td>
                                             <td>@Html.Raw(product.Description)</td>
                                             <td>
                                                 @if (product.IsAdminApproved)
                                                 {
-                                                    <input type="checkbox" checked="checked" onclick='checkProductChange("@product.Id")' />
+                                                    <input class="adminCheck" type="checkbox" checked="checked" onclick='checkProductChange("@product.Id")' />
                                                 }
                                                 else
                                                 {
-                                                    <input type="checkbox" onclick='checkProductChange("@product.Id")' />
+                                                    <input class="adminCheck" type="checkbox" onclick='checkProductChange("@product.Id")' />
                                                 }
                                             </td>
                                         </tr>
@@ -92,14 +108,25 @@
         function checkChange(id) {
             $.post("CheckChange",
                 { id: id },
-                function (data, status) { console.log(data) }
+                function (data, status) { }
             )
         }
         function checkProductChange(id) {
             $.post("CheckProductChange",
                 { id: id },
-                function (data, status) { console.log(data) }
+                function (data, status) { }
             )
         }
+        function settingChange() {
+            $.get("ChangeConfiguration",
+                function (data, status) { }
+            )
+        }
+        $(document).ready(function () {
+            if ("@Model.IsVendor"=="True")
+                $(".adminCheck").each(function (i, elem) {
+                    $(elem).prop("disabled",true);
+                })
+        })
     }
 </script>

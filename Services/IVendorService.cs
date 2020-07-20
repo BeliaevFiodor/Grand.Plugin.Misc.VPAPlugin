@@ -9,8 +9,8 @@ namespace Grand.Plugin.Misc.VPAPlugin.Services
 {
     public interface IVendorService : Grand.Services.Vendors.IVendorService
     {
-        Task<Vendor> SetOnTrue(Vendor vendor);
-        Task<Vendor> SetOnFalse(Vendor vendor);
+        //Task<Vendor> SetOnTrue(Vendor vendor);
+        //Task<Vendor> SetOnFalse(Vendor vendor);
         Task<List<VendorModel>> GetVendors();
         Task CheckChange(string id);
         Task CheckProductChange(string id);

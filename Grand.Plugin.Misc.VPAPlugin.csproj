@@ -7,8 +7,11 @@
   <ItemGroup>
     <Compile Remove="AdminViewLocationExpander.cs" />
     <Compile Remove="AdminViewStartup.cs" />
+    <Compile Remove="Domains\Vendor.cs" />
     <Compile Remove="RouteProvider.cs" />
     <Compile Remove="Services\CreateProductModelService.cs" />
+    <Compile Remove="Services\IVendorService.cs" />
+    <Compile Remove="Services\VendorService.cs" />
   </ItemGroup>
 
   <ItemGroup>

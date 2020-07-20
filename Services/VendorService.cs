@@ -74,7 +74,8 @@ namespace Grand.Plugin.Misc.VPAPlugin.Services
                     Id = y.Id,
                     Name = y.Name,
                     Description = y.FullDescription,
-                    IsAdminApproved = y.IsAdminApproved
+                    IsAdminApproved = y.IsAdminApproved,
+                    IsAdminApproveNeeded = y.IsAdminApproveNeeded
                 }).ToList()
             }).ToList();
         }

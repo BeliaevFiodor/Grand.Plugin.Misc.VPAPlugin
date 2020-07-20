@@ -5,6 +5,7 @@ using Grand.Core.Domain.Catalog;
 using Grand.Core.Domain.Customers;
 using Grand.Core.Domain.Forums;
 using Grand.Core.Domain.Seo;
+using Grand.Core.Domain.Vendors;
 using Grand.Services.Catalog;
 using Grand.Services.Forums;
 using Grand.Services.Security;
@@ -24,11 +25,12 @@ namespace Grand.Plugin.Misc.VPAPlugin.Services
         private readonly IRepository<Grand.Plugin.Misc.VPAPlugin.Domains.Product> _repo;
         private readonly IAclService _aclService;
         private readonly IStoreMappingService _storeMappingService;
-        private readonly IRepository<Grand.Plugin.Misc.VPAPlugin.Domains.Vendor> _vendorService;
+        private readonly IRepository<Vendor> _vendorService;
         private readonly IRepository<Customer> _customerService;
         private readonly IStoreContext _storeContext;
         private readonly IWorkContext _workContext;
         private readonly IForumService _forumService;
+        private readonly VPAPluginSettings _settings;
         public ProductServiceOver(IRepository<Grand.Plugin.Misc.VPAPlugin.Domains.Product> repo,
             ICacheManager cacheManager,
             IRepository<Product> productRepository,
@@ -47,9 +49,10 @@ namespace Grand.Plugin.Misc.VPAPlugin.Services
             IAclService aclService,
             IStoreMappingService storeMappingService,
             CatalogSettings catalogSettings,
-            IRepository<Grand.Plugin.Misc.VPAPlugin.Domains.Vendor> vendorService,
+            IRepository<Vendor> vendorService,
             IStoreContext storeContext,
-            IForumService forumService) : base(cacheManager, productRepository, productReviewRepository, urlRecordRepository, customerRepository,
+            IForumService forumService,
+            VPAPluginSettings settings) : base(cacheManager, productRepository, productReviewRepository, urlRecordRepository, customerRepository,
                                                 customerRoleProductRepository, customerTagProductRepository, productDeletedRepository, customerProductRepository, productTagRepository,
                                                 productAttributeService, productAttributeParser, workContext, mediator, aclService, storeMappingService, catalogSettings)
         {
@@ -61,6 +64,7 @@ namespace Grand.Plugin.Misc.VPAPlugin.Services
             _storeContext = storeContext;
             _workContext = workContext;
             _forumService = forumService;
+            _settings = settings;
         }
 
         public override async Task<IList<Product>> GetAllProductsDisplayedOnHomePage()
@@ -80,7 +84,7 @@ namespace Grand.Plugin.Misc.VPAPlugin.Services
             //availability dates
             products = products.Where(p => p.IsAvailable()).ToList();
 
-            products = products.Where(x => !(x.VendorId != null && _vendorService.GetById(x.VendorId).IsAdminApproveNeeded && !x.IsAdminApproved))
+            products = products.Where(x => !(x.VendorId != null && x.IsAdminApproveNeeded && !x.IsAdminApproved))
                         .ToList();
             List<Product> result = new List<Product>();
             foreach (var p in products)
@@ -94,9 +98,14 @@ namespace Grand.Plugin.Misc.VPAPlugin.Services
             var prod = await _repo.GetByIdAsync(product.Id);
             if (!prod.IsAdminApproved && !String.IsNullOrEmpty(prod.VendorId))
             {
-                var vendor = await _vendorService.GetByIdAsync(prod.VendorId);
-                if (vendor.IsAdminApproveNeeded)
+                    bool isNew = true;
+                    var vendorProducts = _repo.Collection.AsQueryable().FirstOrDefault(x => x.VendorId == prod.VendorId);
+                    if (vendorProducts == null)
+                        isNew = _settings.IsNewVendorsAdminApproveNeeded;
+                    else isNew = vendorProducts.IsAdminApproveNeeded;
+               if (isNew)
                 {
+                    var vendor = _vendorService.GetById(prod.VendorId);
                     var admins = _customerService.Collection.AsQueryable();
                     var admins2 = admins.Where(x => x.CustomerRoles.Any(y => y.SystemName == "Administrators")).ToList();
                     if(admins2!=null && admins2.Count>0)

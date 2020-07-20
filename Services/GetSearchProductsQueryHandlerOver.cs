@@ -18,6 +18,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Grand.Services.Queries.Handlers.Catalog;
 using Grand.Plugin.Misc.VPAPlugin.Domains;
+using Microsoft.AspNetCore.Http;
 
 namespace Grand.Plugin.Misc.VPAPlugin.Services
 {
@@ -26,9 +27,11 @@ namespace Grand.Plugin.Misc.VPAPlugin.Services
     {
 
         private readonly IRepository<Domains.Product> _myProductRepository;
-        private readonly IRepository<Domains.Vendor> _myVendorRepository;
+        //private readonly IRepository<Domains.Vendor> _myVendorRepository;
         private readonly ISpecificationAttributeService _specificationAttributeService;
-
+        private readonly IWorkContext _workContext;
+        private readonly IStoreContext _storeContext;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly CatalogSettings _catalogSettings;
         private readonly CommonSettings _commonSettings;
 
@@ -38,14 +41,20 @@ namespace Grand.Plugin.Misc.VPAPlugin.Services
             CatalogSettings catalogSettings,
             CommonSettings commonSettings,
             IRepository<Domains.Product> myProductRepo,
-            IRepository<Domains.Vendor> myVendorRepo) : base(productRepository, specificationAttributeService, catalogSettings, commonSettings)
+            IWorkContext workContext,
+            IStoreContext storeContext,
+            IHttpContextAccessor accessor
+           ) : base(productRepository, specificationAttributeService, catalogSettings, commonSettings)
         {
             _myProductRepository = myProductRepo;
-            _myVendorRepository = myVendorRepo;
+            //_myVendorRepository = myVendorRepo;
             _specificationAttributeService = specificationAttributeService;
 
             _catalogSettings = catalogSettings;
             _commonSettings = commonSettings;
+            _workContext = workContext;
+            _storeContext = storeContext;
+            _httpContextAccessor = accessor;
         }
 
         public new async Task<(IPagedList<Core.Domain.Catalog.Product> products, IList<string> filterableSpecificationAttributeOptionIds)>
@@ -306,10 +315,14 @@ namespace Grand.Plugin.Misc.VPAPlugin.Services
                 //best seller
                 builderSort = Builders<Domains.Product>.Sort.Descending(x => x.Sold);
             }
-            
-            //TODO: Добавить фильтр для проверки Vendor.IsAdminApproveNeeded
-            filter = filter & builder.Where(p => !(!String.IsNullOrEmpty(p.VendorId) && !p.IsAdminApproved));
-            
+
+            //Добавить фильтр для проверки Vendor.IsAdminApproveNeeded
+
+            var a = _httpContextAccessor.HttpContext.Request.Path.Value;
+            //if(!(_workContext.CurrentCustomer.CustomerRoles.Any(x=>x.Name =="Administrators") || _workContext.CurrentCustomer.CustomerRoles.Any(x=>x.Name=="Vendors")))
+            if (!a.Contains("/Admin/"))
+                filter = filter & builder.Where(p => !(!String.IsNullOrEmpty(p.VendorId) && p.IsAdminApproveNeeded && !p.IsAdminApproved));
+
 
             var products = await PagedList<Domains.Product>.Create(_myProductRepository.Collection, filter, builderSort, request.PageIndex, request.PageSize);
 
