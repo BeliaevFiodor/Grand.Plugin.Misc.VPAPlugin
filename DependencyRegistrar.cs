@@ -23,7 +23,7 @@ namespace Grand.Plugin.Misc.VPAPlugin
            // builder.RegisterType<VendorService>().As<IVendorService>().InstancePerLifetimeScope();
             builder.RegisterType<ProductService>().As<IProductService>().InstancePerLifetimeScope();
             builder.RegisterType<ProductServiceOver>().As<Grand.Services.Catalog.IProductService>().InstancePerLifetimeScope();
-            builder.RegisterType<GetCategoryHandlerOver>().As<IRequestHandler<GetCategory, Web.Models.Catalog.CategoryModel>>().InstancePerLifetimeScope();
+            //builder.RegisterType<GetCategoryHandlerOver>().As<IRequestHandler<GetCategory, Web.Models.Catalog.CategoryModel>>().InstancePerLifetimeScope();
             builder.RegisterType<GetSearchProductsQueryHandlerOver>().As<IRequestHandler<GetSearchProductsQuery, (IPagedList<Core.Domain.Catalog.Product>, IList<string>)>>().InstancePerLifetimeScope();
             //builder.RegisterType<CreateProductModelServiceOver>().As<IProductViewModelService>().InstancePerLifetimeScope();
         }

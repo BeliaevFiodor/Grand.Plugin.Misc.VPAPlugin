@@ -10,6 +10,7 @@
     <Compile Remove="Domains\Vendor.cs" />
     <Compile Remove="RouteProvider.cs" />
     <Compile Remove="Services\CreateProductModelService.cs" />
+    <Compile Remove="Services\GetCategoryHadlerOver.cs" />
     <Compile Remove="Services\IVendorService.cs" />
     <Compile Remove="Services\VendorService.cs" />
   </ItemGroup>
