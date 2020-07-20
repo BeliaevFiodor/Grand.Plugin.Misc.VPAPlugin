@@ -319,7 +319,6 @@ namespace Grand.Plugin.Misc.VPAPlugin.Services
             //Добавить фильтр для проверки Vendor.IsAdminApproveNeeded
 
             var a = _httpContextAccessor.HttpContext.Request.Path.Value;
-            //if(!(_workContext.CurrentCustomer.CustomerRoles.Any(x=>x.Name =="Administrators") || _workContext.CurrentCustomer.CustomerRoles.Any(x=>x.Name=="Vendors")))
             if (!a.Contains("/Admin/"))
                 filter = filter & builder.Where(p => !(!String.IsNullOrEmpty(p.VendorId) && p.IsAdminApproveNeeded && !p.IsAdminApproved));
 

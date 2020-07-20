@@ -20,12 +20,9 @@ namespace Grand.Plugin.Misc.VPAPlugin
         public void Register(ContainerBuilder builder, ITypeFinder typeFinder,GrandConfig config)
         {
             builder.RegisterType<VPAPlugin>().InstancePerLifetimeScope();
-           // builder.RegisterType<VendorService>().As<IVendorService>().InstancePerLifetimeScope();
             builder.RegisterType<ProductService>().As<IProductService>().InstancePerLifetimeScope();
             builder.RegisterType<ProductServiceOver>().As<Grand.Services.Catalog.IProductService>().InstancePerLifetimeScope();
-            //builder.RegisterType<GetCategoryHandlerOver>().As<IRequestHandler<GetCategory, Web.Models.Catalog.CategoryModel>>().InstancePerLifetimeScope();
             builder.RegisterType<GetSearchProductsQueryHandlerOver>().As<IRequestHandler<GetSearchProductsQuery, (IPagedList<Core.Domain.Catalog.Product>, IList<string>)>>().InstancePerLifetimeScope();
-            //builder.RegisterType<CreateProductModelServiceOver>().As<IProductViewModelService>().InstancePerLifetimeScope();
         }
 
         public int Order {

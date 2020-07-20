@@ -77,22 +77,6 @@ namespace Grand.Plugin.Misc.VPAPlugin.Services
             
         }
 
-        //public async Task<Grand.Plugin.Misc.VPAPlugin.Domains.Product> Approve(Grand.Plugin.Misc.VPAPlugin.Domains.Product product)
-        //{
-        //    if (product == null)
-        //        throw new NullReferenceException();
-        //    product.IsAdminApproved = true;
-        //    return await _repo.UpdateAsync(product);
-        //}
-
-        //public async Task<Grand.Plugin.Misc.VPAPlugin.Domains.Product> DisApprove(Grand.Plugin.Misc.VPAPlugin.Domains.Product product)
-        //{
-        //    if (product == null)
-        //        throw new NullReferenceException();
-        //    product.IsAdminApproved = false;
-        //    return await _repo.UpdateAsync(product);
-        //}
-
         public async Task CheckProductChange(string id)
         {
             var product = _repo.GetById(id);
